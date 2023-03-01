@@ -1,0 +1,290 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <div
+      style="
+        width: 400px;
+        margin: 0 auto;
+        font-size: 22px;
+        margin-top: 20px;
+        font-family: 'Courier New', Courier, monospace;
+        text-align: center;
+      "
+    >
+      <div style="margin-bottom: 10px">How do you say in french?</div>
+      <div id="level" style="color: #ccc"></div>
+      <div id="counter" style="color: #ccc"></div>
+      <div id="score" style="margin-top: 10px"></div>
+      <div id="test">
+        <div style="position: relative" style="min-height: 100px; width: 400px">
+          <img id="illustration" style="width: 300px; margin: 30px auto" />
+          <div
+            id="word"
+            style="
+              position: absolute;
+              top: 10px;
+              left: 10px;
+              font-size: 25px;
+              font-weight: bold;
+              font-style: italic;
+              color: rgba(0, 0, 0, 0.1);
+            "
+          ></div>
+        </div>
+        <div id="help" style="font-size: 20px; margin-bottom: 10px"></div>
+        <form id="form">
+          <input id="response" />
+          <button type="submit">check</button>
+        </form>
+        <div display="flex">
+          <button onclick="addAccent('ô')">&ocirc;</button>
+          <button onclick="addAccent('â')">&acirc;</button>
+          <button onclick="addAccent('è')">&egrave;</button>
+          <button onclick="addAccent('é')">&eacute;</button>
+        </div>
+      </div>
+      <div
+        id="answer"
+        style="
+          font-size: 25px;
+          font-weight: bold;
+          color: #f88;
+          margin-top: 20px;
+          padding: 20px;
+          border-radius: 20px;
+          background-color: #aaa;
+          display: none;
+        "
+      ></div>
+      <div id="reward" style="display: none">
+        <img
+          style="width: 400px"
+          src="https://media.istockphoto.com/vectors/unicorn-face-cute-clipart-vector-isolated-vector-id1206701951?k=20&m=1206701951&s=612x612&w=0&h=4epRJsFRmaoqcxjzgAD3tR8HvxFukBoRGr50xIoipnw="
+        />
+      </div>
+    </div>
+  </body>
+  <script>
+    function get(id) {
+      return document.getElementById(id);
+    }
+    accents = [
+      ["&ocirc;", "ô"],
+      ["&acirc;", "â"],
+      ["&eacute;", "é"],
+      ["&egrave;", "è"],
+    ];
+    const fr = [
+      "une moto",
+      "un h&ocirc;pital",
+      "un dauphin",
+      "un chapeau",
+      "une porte",
+      "une pomme",
+      "un h&ocirc;tel",
+      "un ch&acirc;teau",
+      "un lavabo",
+      "un fant&ocirc;me",
+      "un crapaud",
+      "un corbeau",
+      "une colle",
+      "une photo",
+      "un chaudron",
+      "un potiron",
+      "un tr&ocirc;ne",
+      "une saucisse",
+      "un chameau",
+      "un homme",
+      "un kimono",
+      "un c&ocirc;t&eacute;",
+      "un landau",
+      "des ciseaux",
+      "une sorci&egrave;re",
+    ];
+
+    const en = [
+      "a motorbike",
+      "an hospital",
+      "a dolphin",
+      "a hat",
+      "a door",
+      "an apple",
+      "an hotel",
+      "a castle",
+      "a sink",
+      "a ghost",
+      "a toad",
+      "a raven",
+      "a glue",
+      "a photo",
+      "a cauldron",
+      "a pumpkin",
+      "a throne",
+      "a saussage",
+      "a camel",
+      "a man",
+      "a kimono",
+      "a side",
+      "a stroller",
+      "a pair of scissors",
+      "a witch",
+    ];
+
+    const pics = [
+      "https://img.freepik.com/free-vector/vintage-chopper-motorcycle-side-view-template_225004-1242.jpg?w=1800&t=st=1667076609~exp=1667077209~hmac=5d7e14cdc9ae08326b9f69488f3f3b279dfb64a1b2fa50ff11cd26e76588d74d",
+      "https://img.freepik.com/free-vector/people-walking-sitting-hospital-building-city-clinic-glass-exterior-flat-vector-illustration-medical-help-emergency-architecture-healthcare-concept_74855-10130.jpg?w=2000&t=st=1667076934~exp=1667077534~hmac=6fb3edfb7f9c2f830d9264b8ce97b7054ec57e8ded8b7e8d0c66e9f4c8491f59",
+      "https://img.freepik.com/free-vector/dolphin-cartoon-character-playing-guitar_1308-117558.jpg?w=900&t=st=1667076965~exp=1667077565~hmac=1919cdedd917db6309ee7bed175a8927deb2194ffa115fa15bf8819c9104b2c1",
+      "https://img.freepik.com/premium-vector/collection-various-types-hats-white-background_40260-116.jpg?w=2000",
+      "https://img.freepik.com/free-vector/simple-wooden-door-interior-design_1308-76631.jpg?w=826&t=st=1667077064~exp=1667077664~hmac=d450f1f3cdd3c36980c8f5c763974e5772440fb8231c4bb4c9a3a67eb8ba8f0c",
+      "https://img.freepik.com/free-vector/hand-drawn-apple-fruit-illustration_53876-2980.jpg?w=1380&t=st=1667077093~exp=1667077693~hmac=fd602b2bf6ff9f79ff268a4817b0b192fa76fa365ee0d52446cc27196f60615f",
+      "https://img.freepik.com/free-vector/flat-hotel-facade-background_23-2148157379.jpg?w=1380&t=st=1667077115~exp=1667077715~hmac=5612ab056777d0a754f98cd37bbc8d58461a87cfc3d471787bd7b6884e4eef8f",
+      "https://img.freepik.com/free-vector/fairy-tale-castle-concept_23-2148463794.jpg?w=1380&t=st=1667077133~exp=1667077733~hmac=09d5a5d7e2340854ac1de7d4174b9e9cea38eb321268f5f68a5a9468ebb87214",
+      "https://img.freepik.com/premium-vector/ceramic-sink-front-top-view-restroom-basin-washing-hands-classic-white-bathroom-washbasin-porcelain-domestic-tool-with-chrome-faucet-realistic-3d-vector-illustration_341509-2233.jpg?w=1800",
+      "https://img.freepik.com/free-vector/illustration-white-ghost-smiling-phantom-silhouette-isolated-transparent-background_1441-2367.jpg?w=1380&t=st=1667077183~exp=1667077783~hmac=94ece0bfa87f9f6260b230ca8a900ce8d0260f9deae46178a8717c3ed85755d6",
+      "https://img.freepik.com/free-vector/hand-drawn-frog-outline-illustration_23-2149265461.jpg?w=1380&t=st=1667077217~exp=1667077817~hmac=ec00f44edfcc591000b9f0f5ee5012e51ae91a88f5986f13a3d57176d569ad5d",
+      "https://img.freepik.com/premium-vector/set-ravens-collection-black-crows-silhouette-flying-crow_178630-237.jpg?w=1800",
+      "https://img.freepik.com/free-vector/branded-metal-plastic-glue-tubes-vector_1441-662.jpg?w=1380&t=st=1667077268~exp=1667077868~hmac=4ebe679ff06d53aa58c0b95d166b270c36d97e590dd9382145e3964d59fdc622",
+      "https://img.freepik.com/free-vector/retro-blank-instant-photo-frame_1199-192.jpg?w=1380&t=st=1667077286~exp=1667077886~hmac=2b0cbfe0c6707e91fff740b73ab86265504fed594a028d21b9fd6e93f9b16719",
+      "https://img.freepik.com/free-vector/two-decorative-witch-cauldrons-metal-pots-black-bronze-with-arc-shaped-hanger-realistic_1284-27889.jpg?w=2000&t=st=1667077305~exp=1667077905~hmac=e895ae01743609a4ea8160dd98826eb665a8b14a4ec663d37f249c2fb37c342a",
+      "https://img.freepik.com/free-vector/fresh-pumpkin-white-b_1308-39708.jpg?w=1380&t=st=1667077324~exp=1667077924~hmac=c0cca15f70cfd262ba4cd83ae1753859632e52d9bf008180fa66c3c890c6411d",
+      "https://img.freepik.com/free-vector/cartoon-castle-hall-interior-illustration_52683-66190.jpg?w=1800&t=st=1667077361~exp=1667077961~hmac=c2d5e0403a2603c6ff56c0d61b7033d300e9c61d3b1a889367c6ae78b02a1ca4",
+      "https://img.freepik.com/free-vector/grilled-sausage-cartoon-style_1308-79157.jpg?w=1800&t=st=1667077385~exp=1667077985~hmac=c08e3a0b160f578c61a1eee7eff712a477ae34983956bc75a02399e05ad86045",
+      "https://img.freepik.com/free-vector/sticker-template-camel-cartoon-character_1308-67922.jpg?w=1480&t=st=1667077401~exp=1667078001~hmac=770478c813d54c6b14483ffa85d016ccfb44302b24af8669abbd86e5bf5bdd49",
+      "https://img.freepik.com/free-vector/businessman-set-with-different-postures_52683-190.jpg?w=2000&t=st=1667077435~exp=1667078035~hmac=32bf2f89e5bbba63a0b6aa1a122f3a4dc05c6de6daa5916f17f8506d3127e242",
+      "https://as2.ftcdn.net/v2/jpg/05/22/16/95/1000_F_522169522_sJUfSPZ4YYpftPD5D0BAFmM4HQzjSwBr.jpg",
+      "https://img.freepik.com/free-vector/hand-drawing-illustration-human-face_53876-15626.jpg?w=1060&t=st=1667077506~exp=1667078106~hmac=4709811ed77b36473b446c97e2c938a56342d67b128f6be2c8763dfedd5ea72d",
+      "https://img.freepik.com/free-vector/baby-strollers_1308-41901.jpg?w=1800&t=st=1667077532~exp=1667078132~hmac=b8d88f1e2ccbb4246bf5a6d325c6955630355629d4e3631e65e23245c84b2f4c",
+      "https://img.freepik.com/free-vector/scissors-realistic_1262-14792.jpg?w=900&t=st=1667077552~exp=1667078152~hmac=0b71a577b1260a1292e6641aa7c17ffb5cf9799e2b8356327af7e0d5070b7713",
+      "https://img.freepik.com/free-vector/old-witch-riding-broomstick_1308-78092.jpg?w=1800&t=st=1667077572~exp=1667078172~hmac=9f124391ce860eda6568b114aab6896b34f2adbd24023c109d59f701e0ccfa0f",
+    ];
+    let score = 0;
+    let currentWordIndex;
+    let levelWords;
+
+    function initQuestion() {
+      get("counter").innerHTML = `Word #${fr.length - levelWords.length + 1}/${
+        fr.length
+      }`;
+      const currentWordIndexInLevelWords = Math.floor(
+        Math.random(levelWords.length) * levelWords.length
+      );
+      const word = levelWords.splice(currentWordIndexInLevelWords, 1);
+      currentWordIndex = fr.findIndex((w) => w === word[0]);
+      get("illustration").src = pics[currentWordIndex];
+      get("word").innerHTML = en[currentWordIndex];
+      get("help").innerHTML = getHelp(fr[currentWordIndex]);
+      const newInputName = `name-${Math.random()}`;
+      get("response").name = newInputName;
+    }
+
+    function level1() {
+      get("reward").style.display = "none";
+      levelWords = [...fr];
+      initQuestion();
+      get("form").addEventListener("submit", submitAnswerLevel1);
+    }
+
+    function finish() {
+      get("test").style.display = "none";
+      get("reward").style.display = "block";
+      get("answer").style.color = "0f0";
+      get(
+        "answer"
+      ).innerHTML = `BRAVO !!! Tu connais les ${fr.length} mots de la liste`;
+      levelWords = [...fr];
+      score = 0;
+      initQuestion();
+    }
+    function incScore() {
+      score++;
+      get("score").innerHTML = `Score: ${score}`;
+    }
+
+    function submitAnswerLevel1(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      let value = get("response").value;
+      if (!value) return;
+      value = value.toLowerCase();
+      get("response").value = "";
+      if (isSame(value, fr[currentWordIndex])) {
+        incScore();
+        get("answer").style.display = "block";
+        get("answer").style.color = "9f9";
+        get("answer").innerHTML = "Bonne r&eacute;ponse";
+      } else {
+        get("answer").style.display = "block";
+        get("answer").style.color = "f99";
+        get(
+          "answer"
+        ).innerHTML = `Mauvaise r&eacute;ponse, le r&eacute;ponse &eacute;tait: ${fr[currentWordIndex]}`;
+      }
+      if (score === fr.length) {
+        finish();
+      } else if (levelWords.length === 0) {
+        get("form").removeEventListener("submit", submitAnswerLevel1);
+        get("answer").style.color = "F00";
+        get(
+          "answer"
+        ).innerHTML = `Fini avec ${score} bonnes r&eacute;ponses sur ${fr.length}. Allez courage! On recommence`;
+        score = 0;
+
+        level1();
+      } else {
+        initQuestion();
+      }
+    }
+
+    function getHelp(word) {
+      let accent = "";
+      return word
+        .split("")
+        .reduce((acc, char) => {
+          if (char === "&") {
+            accent = "&";
+          } else if (char === ";") {
+            acc.push(accent + ";");
+            accent = "";
+          } else if (accent) {
+            accent += char;
+          } else {
+            acc.push(char);
+          }
+          return acc;
+        }, [])
+        .reduce(
+          (acc, char) =>
+            acc + (char === " " || Math.random() > 0.3 ? char : "-"),
+          ""
+        );
+    }
+
+    const imgs = [];
+    function preloadImages() {
+      for (const pic of pics) {
+        const img = new Image();
+        img.src = pic;
+        imgs.push(img);
+      }
+    }
+
+    function isSame(strWithAccent, strWithHTMLEntities) {
+      for (const accent of accents) {
+        const accRegexp = new RegExp(accent[0], "g");
+        strWithHTMLEntities.replace(accRegexp, accent[1]);
+      }
+      return (strWithAccent = strWithHTMLEntities);
+    }
+
+    function addAccent(accent) {
+      get("response").value += accent;
+      get("response").focus();
+    }
+
+    preloadImages();
+    level1();
+  </script>
+</html>

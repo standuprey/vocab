@@ -1,0 +1,130 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div
+      style="
+        width: 400px;
+        margin: 0 auto;
+        font-size: 22px;
+        margin-top: 20px;
+        font-family: 'Courier New', Courier, monospace;
+        text-align: center;
+      "
+    >
+      <div style="margin-bottom: 10px">How do you say in french?</div>
+      <div id="level" style="color: #ccc"></div>
+      <div id="counter" style="color: #ccc"></div>
+      <div id="score" style="margin-top: 10px"></div>
+      <div
+        id="word"
+        style="font-size: 35px; font-weight: bold; margin: 20px 0 10px 0"
+      ></div>
+      <form id="form">
+        <input id="response" />
+        <button type="submit">check</button>
+      </form>
+      <div id="answer"></div>
+    </div>
+  </body>
+  <script>
+    function get(id) {
+      return document.getElementById(id);
+    }
+    const fr = [
+      "comment",
+      "combien",
+      "maintenant",
+      "avant-hier",
+      "demain",
+      "chez",
+      "aujourd'hui",
+      "apres-demain",
+      "alors",
+      "ensuite",
+    ];
+    const en = [
+      "how",
+      "how many",
+      "now",
+      "the day before yesterday",
+      "tomorrow",
+      "at",
+      "today",
+      "the day after tomorrow",
+      "then",
+      "afterwards",
+    ];
+    let score = 0;
+    let currentWordIndex;
+    let levelWords;
+
+    function initQuestion() {
+      get("counter").innerHTML = `Word #${fr.length - levelWords.length + 1}/${
+        fr.length
+      }`;
+      const currentWordIndexInLevelWords = Math.floor(
+        Math.random(levelWords.length) * levelWords.length
+      );
+      const word = levelWords.splice(currentWordIndexInLevelWords, 1);
+      currentWordIndex = fr.findIndex((w) => w === word[0]);
+      get("word").innerHTML = en[currentWordIndex];
+      const newInputName = `name-${Math.random()}`;
+      get("response").name = newInputName;
+    }
+
+    function level1() {
+      // get("level").innerHTML = "Level 1";
+      levelWords = [...fr];
+      initQuestion();
+      get("form").addEventListener("submit", submitAnswerLevel1);
+    }
+
+    function level2() {
+      get(
+        "answer"
+      ).innerHTML = `BRAVO !!! Tu connais les ${fr.length} mots de la liste`;
+      //   get("level").innerHTML = "Level 2";
+      //   get("form").addEventListener("submit", submitAnswerLevel2);
+    }
+    function incScore() {
+      score++;
+      get("score").innerHTML = `Score: ${score}`;
+    }
+
+    function submitAnswerLevel1(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      let value = get("response").value;
+      if (!value) return;
+      value = value.toLowerCase();
+      get("response").value = "";
+      if (value === fr[currentWordIndex]) {
+        incScore();
+        get("answer").innerHTML = "Bonne r&eacute;ponse";
+      } else {
+        get(
+          "answer"
+        ).innerHTML = `Mauvaise r&eacute;ponse, le r&eacute;ponse &eacute;tait: ${fr[currentWordIndex]}`;
+      }
+      if (score === currentWordIndex.length) {
+        get("form").removeEventListener("submit", submitAnswerLevel1);
+        level2();
+      }
+      if (levelWords.length === 0) {
+        get("form").removeEventListener("submit", submitAnswerLevel1);
+        get(
+          "answer"
+        ).innerHTML = `Fini avec ${score} bonnes r&eacute;ponses sur ${fr.length}. Allez courage! On recommence`;
+        score = 0;
+
+        level1();
+      } else {
+        initQuestion();
+      }
+    }
+
+    level1();
+  </script>
+</html>
